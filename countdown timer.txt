@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Clock with Location</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      color: #00ffff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .clock {
+      font-size: 60px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    .date {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+    .location {
+      font-size: 20px;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="clock" id="clock">00:00:00</div>
+  <div class="date" id="date">Loading date...</div>
+  <div class="location" id="location">Detecting your location...</div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('clock').textContent = timeString;
+
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('location').textContent = `${data.city}, ${data.country_name}`;
+      })
+      .catch(() => {
+        document.getElementById('location').textContent = "Location not available.";
+      });
+  </script>
+
+</body>
+</html>
